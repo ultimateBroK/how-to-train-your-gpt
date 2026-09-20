@@ -1,0 +1,20 @@
+[workspace]
+name = "how-to-train-your-gpt"
+version = "0.1.0"
+authors = ["Hieu Nguyen <hieuteo03@gmail.com>"]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tasks]
+train = "python main.py"
+notebook = "jupyter notebook"
+
+[dependencies]
+python = ">=3.11,<3.13"
+pytorch = ">=2.0"
+pytorch-cpu = ">=2.0"
+tiktoken = "*"
+datasets = "*"
+numpy = "*"
+matplotlib = "*"
+jupyter = "*"

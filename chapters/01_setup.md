@@ -25,26 +25,15 @@ Training neural networks involves millions of **identical, independent math oper
 | RTX 3090/4090 (24GB) | GPT-2 medium (350M) | Few hours |
 | A100 (80GB) | GPT-2 large (774M) | Hours |
 
-### "What is a virtual environment?"
+### "What is Pixi and why do we use it?"
 
-A virtual environment (`venv`) is like a **clean, empty kitchen** just for this project. Without it, you'd be mixing your project's ingredients (Python packages) with everything else on your computer — leading to conflicts when two projects need different versions of the same package.
+Instead of juggling separate Python versions, virtual environments (`venv`), and `pip` packages (which often break across different operating systems or GPU setups), we use **[Pixi](https://pixi.sh)**.
 
-```bash
-# Create a clean kitchen
-python -m venv gpt_env
+**Analogy:** If `venv` is an empty kitchen and `pip` is going to five different grocery stores hoping the ingredients match, **Pixi is an all-in-one automated kitchen kit**. It installs the exact right Python version, PyTorch, C++ mathematical libraries, and tools into an isolated workspace with a single command.
 
-# Step into it
-source gpt_env/bin/activate          # Mac/Linux
-# OR:
-gpt_env\Scripts\activate             # Windows
-
-# Now pip install only affects this kitchen
-# To leave: type `deactivate`
-```
-
-### "What is pip?"
-
-`pip` is Python's **package installer**. It downloads code other people have written (libraries) from the internet and installs them into your environment. Think of it as an "app store" for Python code.
+- **Reproducible:** Everyone on Mac, Linux, and Windows gets the exact same tested environment (`pixi.lock`).
+- **Fast:** Written in Rust, installs packages in seconds.
+- **Task Runner:** Run your training or notebooks directly with `pixi run train` or `pixi run notebook`.
 
 ### "What is PyTorch?"
 
@@ -58,35 +47,48 @@ PyTorch is the framework we'll use to build our neural network. It provides:
 | `autograd` | Automatic gradient calculation | Does calculus for you automatically |
 | `DataLoader` | Feeds data efficiently | A conveyor belt delivering training data |
 
-## Installation — Step by Step
+## Installation — Step by Step (with Pixi)
 
 ```bash
-# Step 1: Create the virtual environment
+# Step 1: Install Pixi (if you don't have it yet)
+# On Linux / macOS:
+curl -fsSL https://pixi.sh/install.sh | bash
+# On Windows (PowerShell):
+# winget install prefix-dev.pixi
+
+# Step 2: Install project environment (everything in pixi.toml)
+pixi install
+
+# Step 3: Verify everything works
+pixi run python -c "import torch; print(f'PyTorch {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}')"
+
+# Step 4: Run training or Jupyter
+pixi run train
+# Or:
+pixi run notebook
+
+# Step 5: (Optional) Enter the environment shell
+pixi shell
+```
+
+<details>
+<summary>Alternative: Classic pip & venv (click to expand)</summary>
+
+```bash
+# 1. Create and activate virtual environment
 python -m venv gpt_env
+source gpt_env/bin/activate    # Mac/Linux
+# gpt_env\Scripts\activate     # Windows
 
-# Step 2: Activate it
-source gpt_env/bin/activate          # Mac/Linux
-# gpt_env\Scripts\activate           # Windows
-
-# Step 3: Install PyTorch (choose the right one)
-# For CPU only (default, works everywhere):
+# 2. Install dependencies
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install tiktoken datasets numpy matplotlib jupyter
 
-# For Apple Silicon (M1/M2/M3):
-# pip install torch torchvision torchaudio
-
-# For NVIDIA GPU (CUDA 11.8):
-# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-# For NVIDIA GPU (CUDA 12.1 - newer cards like RTX 40 series):
-# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Step 4: Install remaining packages
-pip install tiktoken datasets numpy matplotlib
-
-# Step 5: Verify everything works
+# 3. Verify
 python -c "import torch; print(f'PyTorch {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}')"
 ```
+
+</details>
 
 ## What Each Library Does (In Detail)
 

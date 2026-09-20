@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/prerequisite-python%20basics-orange" alt="Python basics only">
   <img src="https://img.shields.io/badge/architecture-LLaMA%203%20style-purple" alt="LLaMA 3 style">
   <img src="https://img.shields.io/badge/purpose-learning%20only-lightgrey" alt="Learning only">
-  <a href="https://colab.research.google.com/github/raiyanyahya/how-to-train-your-gpt/blob/master/notebooks/colab_train.ipynb">
+  <a href="https://colab.research.google.com/github/ultimateBroK/how-to-train-your-gpt/blob/master/notebooks/colab_train.ipynb">
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" height="25">
   </a>
 </p>
@@ -61,7 +61,7 @@ Most ML tutorials fall into one of two traps:
 | Chapter | What You'll Learn |
 |---|---|
 | **[0: Overview](chapters/00_overview.md)** | What is a GPT? The big picture |
-| **[1: Setup](chapters/01_setup.md)** | Install tools, GPU vs CPU, venv, PyTorch basics |
+| **[1: Setup](chapters/01_setup.md)** | Install tools, GPU vs CPU, Pixi environment, PyTorch basics |
 | **[2: Tokenization](chapters/02_tokenization.md)** | BPE walkthrough: how "unbelievably" becomes tokens |
 | **[3: Embeddings](chapters/03_embeddings.md)** | How numbers become meaning. king − man + woman = queen |
 | **[4: Positional Encoding](chapters/04_positional_encoding.md)** | RoPE: why LLaMA rotates vectors, not adds numbers |
@@ -117,30 +117,20 @@ This guide implements the **latest publicly-documented** decoder-only Transforme
 
 ```bash
 # 1. Clone
-git clone https://github.com/raiyanyahya/how-to-train-your-gpt.git
+git clone https://github.com/ultimateBroK/how-to-train-your-gpt.git
 cd how-to-train-your-gpt
 
-# 2. Create environment
-python -m venv gpt_env
-source gpt_env/bin/activate          # Mac/Linux
-# gpt_env\Scripts\activate           # Windows
+# 2. Install dependencies & environment using Pixi (single command)
+pixi install
 
-# 3. Install dependencies (CPU version. For GPU see below)
-pip install torch tiktoken datasets numpy matplotlib --index-url https://download.pytorch.org/whl/cpu
+# 3. Verify PyTorch & device
+pixi run python -c "import torch; print(f'PyTorch: {torch.__version__} | CUDA available: {torch.cuda.is_available()}')"
 
-# Or use the requirements file
-pip install -r requirements.txt
+# 4. Run the training script
+pixi run train
 
-# 4. Verify GPU (optional but recommended)
-python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
-
-# 5. Start reading!
-open chapters/00_overview.md
-```
-
-Run the training script:
-
-```bash
+# Or enter the interactive environment shell:
+pixi shell
 python main.py
 ```
 
@@ -157,11 +147,11 @@ Alongside the textbook, each chapter has a companion notebook you can run live. 
 We're going to run this whole project on a very small dataset so you can watch training happen in minutes rather than weeks. Every notebook is self-contained. Open it, run all cells and you'll see the model learn in real time.
 
 ```bash
-# Install everything you need
-pip install jupyter tiktoken torch numpy datasets matplotlib --index-url https://download.pytorch.org/whl/cpu
+# Launch Jupyter Notebook via Pixi
+pixi run notebook
 
-# Start with chapter 2 (tokenization)
-jupyter notebook notebooks/02_tokenization.ipynb
+# Or run a specific notebook directly
+pixi run jupyter notebook notebooks/02_tokenization.ipynb
 ```
 
 Notebooks live in the `notebooks/` directory, one per chapter. Open any of them and hit **Cell → Run All**.
@@ -268,11 +258,12 @@ Each chapter follows the same **4-step structure**:
 ```
 📦 how-to-train-your-gpt/
 ├── 📄 README.md              ← You are here
+├── 📦 pixi.toml              ← Pixi project configuration & tasks
 ├── 🐍 main.py                ← Runnable training script (clone & run)
-├── 📋 requirements.txt       ← One command install
+├── 📋 requirements.txt       ← Alternative pip install
 ├── 📂 chapters/
 │   ├── 🏠 00_overview.md     ← What is a GPT? Why build one?
-│   ├── 🔧 01_setup.md        ← Install tools, GPU vs CPU, venv basics
+│   ├── 🔧 01_setup.md        ← Install tools, GPU vs CPU, Pixi environment basics
 │   ├── 🔪 02_tokenization.md ← BPE walkthrough, EOS tokens, emoji handling
 │   ├── 🧊 03_embeddings.md   ← How numbers become meaning, king − man + woman
 │   ├── 📍 04_positional_encoding.md ← RoPE math, numerical example, theta

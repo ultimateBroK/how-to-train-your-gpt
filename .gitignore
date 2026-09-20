@@ -3,3 +3,6 @@ checkpoints/
 __pycache__/
 *.pyc
 loss_curve.png
+# pixi environments
+.pixi/*
+!.pixi/config.toml
